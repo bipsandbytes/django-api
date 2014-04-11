@@ -47,7 +47,7 @@ Usage
 
 ::
 
-    from django_api import api
+    from django_api.decorators import api
     @api({
         'accepts': {
             'x': forms.IntegerField(min_value=0),
@@ -81,7 +81,7 @@ API accepts, or the return values of the API.
 
 Example::
 
-    from django_api import api_accepts
+    from django_api.decorators import api_accepts
     @api_accepts({
         'x': forms.IntegerField(min_value=0),
         'y': forms.IntegerField(min_value=0),
@@ -94,7 +94,7 @@ Example::
         return HttpResponse('%d' % (x + y))
 
 
-    from django_api import api_returns
+    from django_api.decorators import api_returns
     @api_returns([
         (200, 'Operation successful', ),
         (403, 'User does not have permission', ),
