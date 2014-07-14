@@ -3,6 +3,7 @@ Django API
 =================
 
 Django API is a way to cleanly specify and validate your Django_ APIs in a single block of code.
+It provides a method to keep your API documentation and implementation consistent.
 
 .. _Django: https://www.djangoproject.com/
 
@@ -45,6 +46,49 @@ Example::
 Usage
 -----
 
+Specify your API by using the ``@api`` decorator. The ``@api`` decorator takes a dictionary with two keys: ``accepts`` and ``returns``.
+::
+
+    from django_api.decorators import api
+    @api({
+        'accepts': {
+        },
+        'returns': [
+        ]
+    })
+    def add(request, *args, **kwargs):
+
+
+Describe the parameters your API accepts by listing them out in the ``accepts`` dictionary. Each entry in the ``accepts`` section
+is a mapping between a name and a Django_ form type.
+Received query parameters are automatically converted to the specified type. If the parameter does not conform to the specification
+the query fails to validate (see below).
+Once validated, the variables will be placed in the ``request`` dictionary for use within the view.
+::
+
+    'accepts': {
+        'x': forms.IntegerField(min_value=0),
+        'y': forms.IntegerField(max_value=10, required=False),
+        'u': User(),
+    }
+ 
+
+By default, the ``@api`` decorator checks that the returned response is of JSON type.
+
+Specify the valid returned HTTP codes by listing them out in the ``returns`` array.
+Each element is the array is a tuple consisting of ``(HTTP code, helpful message)``.
+The second element of the tuple -- the ``message`` -- is for documentation purposes only.
+If the response does not conform to the specification, the query will fail to validate (see below).
+::
+
+    'returns': [
+        (200, 'Addition successful', ),
+        (403, 'User does not have permission', ),
+        (404, 'Resource not found', ),
+        (404, 'User not found', ),
+    ]
+
+Putting it all together, we have
 ::
 
     from django_api.decorators import api
@@ -55,7 +99,7 @@ Usage
             'u': User(),
         },
         'returns': [
-            (200, 'Operation successful', ),
+            (200, 'Addition successful', ),
             (403, 'User does not have permission', ),
             (404, 'Resource not found', ),
             (404, 'User not found', ),
@@ -70,7 +114,11 @@ Usage
 
 
 
-If validation fails, a ``HTTP 400 - Bad request`` is returned to the client. For safety, ``django_api`` will perform validation only if ``settings.DEBUG = True`` i.e. production code remains unaffected. 
+---
+Validation
+---
+If validation fails, a ``HTTP 400 - Bad request`` is returned to the client. For safety, ``django_api`` will perform validation only if ``settings.DEBUG = True``.
+This ensures that production code always remains unaffected. 
 
 
 Advanced usage
