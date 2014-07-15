@@ -79,7 +79,7 @@ def api_accepts(fields):
             form = form_class(getattr(request, request.method))
 
             if not form.is_valid():
-                if settings.DEBUG or settings.TESTING:
+                if settings.DEBUG:
                     return JsonResponseBadRequest(
                         'failed to validate: %s' % dict(form.errors)
                     )
@@ -154,7 +154,7 @@ def api_returns(return_values):
             return_value = func(request, *args, **kwargs)
 
             if not isinstance(return_value, JsonResponse):
-                if settings.DEBUG or settings.TESTING:
+                if settings.DEBUG:
                     return JsonResponseBadRequest('API did not return JSON')
                 else:
                     logger.warn('API did not return JSON')
@@ -165,7 +165,7 @@ def api_returns(return_values):
             accepted_return_codes.append(500)
 
             if return_value.status_code not in accepted_return_codes:
-                if settings.DEBUG or settings.TESTING:
+                if settings.DEBUG:
                     return JsonResponseBadRequest(
                         'API returned %d instead of acceptable values %s' %
                         (return_value.status_code, accepted_return_codes)

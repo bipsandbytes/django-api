@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 class SimpleTest(TestCase):
 
+    @override_settings(DEBUG=True)
     def test_api_accepts_decorator_debug(self):
         """
         Test the @api_accepts decorator (with DEBUG=True).
@@ -85,7 +86,6 @@ class SimpleTest(TestCase):
         self.assertEquals(response.status_code, 200)
 
 
-    @override_settings(TESTING=False)
     @override_settings(DEBUG=False)
     def test_api_accepts_decorator(self):
         """
@@ -113,6 +113,7 @@ class SimpleTest(TestCase):
         self.assertEquals(response_json['error_message'], 'still called on failure')
         logger.setLevel(original_log_level)
 
+    @override_settings(DEBUG=True)
     def test_api_returns_decorator_debug(self):
         """
         Test that the @api_returns decorator (in debug mode)
@@ -143,7 +144,6 @@ class SimpleTest(TestCase):
         self.assertEquals(response.status_code, 400)
 
     @override_settings(DEBUG=False)
-    @override_settings(TESTING=False)
     def test_api_returns_decorator(self):
         """
         Test that the @api_returns decorator does not result in a 400
@@ -173,6 +173,7 @@ class SimpleTest(TestCase):
         self.assertEquals(response.status_code, 202)
         logger.setLevel(original_log_level)
 
+    @override_settings(DEBUG=True)
     def test_api_decorator_debug(self):
         """
         Test that the @api decorator (in debug mode)
