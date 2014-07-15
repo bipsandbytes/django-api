@@ -123,8 +123,8 @@ def api_returns(return_values):
     """
     Define the return schema of an API.
 
-    'return_values' is a list of tuples of the form
-    (HTTP return code, documentation).
+    'return_values' is a dictionary mapping
+    HTTP return code => documentation
     In addition to validating that the status code of the response belongs to
     one of the accepted status codes, it also validates that the returned
     object is JSON (derived from JsonResponse)
@@ -136,12 +136,12 @@ def api_returns(return_values):
 
     For example:
 
-    @api_returns([
-        (200, 'Operation successful', ),
-        (403, 'User does not have permission', ),
-        (404, 'Resource not found', ),
-        (404, 'User not found', ),
-    )
+    @api_returns({
+        200: 'Operation successful',
+        403: 'User does not have persion',
+        404: 'Resource not found',
+        404: 'User not found',
+    })
     def add(request, *args, **kwargs):
         if not request.user.is_superuser:
             return JsonResponseForbidden()  # 403
@@ -159,8 +159,7 @@ def api_returns(return_values):
                 else:
                     logger.warn('API did not return JSON')
 
-            accepted_return_codes = \
-                [http_code for (http_code, doc) in return_values]
+            accepted_return_codes = return_values.keys()
             # Never block 500s - these should be handled by other
             # reporting mechanisms
             accepted_return_codes.append(500)
@@ -194,10 +193,10 @@ def api(accept_return_dict):
             'y': forms.IntegerField(min_value=0),
         },
         'returns': [
-            (200, 'Operation successful', ),
-            (403, 'User does not have permission', ),
-            (404, 'Resource not found', ),
-            (404, 'User not found', ),
+            200: 'Operation successful',
+            403: 'User does not have persion',
+            404: 'Resource not found',
+            404: 'User not found',
         ]
     })
     def add(request, *args, **kwargs):

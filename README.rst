@@ -47,14 +47,15 @@ Usage
 -----
 
 Specify your API by using the ``@api`` decorator. The ``@api`` decorator takes a dictionary with two keys: ``accepts`` and ``returns``.
+
 ::
 
     from django_api.decorators import api
     @api({
         'accepts': {
         },
-        'returns': [
-        ]
+        'returns': {
+        }
     })
     def add(request, *args, **kwargs):
 
@@ -64,6 +65,7 @@ is a mapping between a name and a Django_ form type.
 Received query parameters are automatically converted to the specified type. If the parameter does not conform to the specification
 the query fails to validate (see below).
 Once validated, the variables will be placed in the ``request`` dictionary for use within the view.
+
 ::
 
     'accepts': {
@@ -75,20 +77,22 @@ Once validated, the variables will be placed in the ``request`` dictionary for u
 
 By default, the ``@api`` decorator checks that the returned response is of JSON type.
 
-Specify the valid returned HTTP codes by listing them out in the ``returns`` array.
-Each element is the array is a tuple consisting of ``(HTTP code, helpful message)``.
-The second element of the tuple -- the ``message`` -- is for documentation purposes only.
+Specify the valid returned HTTP codes by listing them out in the ``returns`` dictionary.
+Each entry in the dictionary must map a HTTP response code to a helpful message, explaining the outcome
+of the action. The helpful message is for documentation purposes only.
 If the response does not conform to the specification, the query will fail to validate (see below).
+
 ::
 
-    'returns': [
-        (200, 'Addition successful', ),
-        (403, 'User does not have permission', ),
-        (404, 'Resource not found', ),
-        (404, 'User not found', ),
-    ]
+    'returns': {
+        200: 'Addition successful',
+        403: 'User does not have permission',
+        404: 'Resource not found',
+        404: 'User not found',
+    }
 
 Putting it all together, we have
+
 ::
 
     from django_api.decorators import api
@@ -98,12 +102,12 @@ Putting it all together, we have
             'y': forms.IntegerField(max_value=10, required=False),
             'u': User(),
         },
-        'returns': [
-            (200, 'Addition successful', ),
-            (403, 'User does not have permission', ),
-            (404, 'Resource not found', ),
-            (404, 'User not found', ),
-        ]
+        'returns': {
+            200: 'Addition successful',
+            403: 'User does not have permission',
+            404: 'Resource not found',
+            404: 'User not found',
+        }
     })
     def add(request, *args, **kwargs):
         if not request.GET['x'] == 10:
@@ -143,12 +147,12 @@ Example::
 
 
     from django_api.decorators import api_returns
-    @api_returns([
-        (200, 'Operation successful', ),
-        (403, 'User does not have permission', ),
-        (404, 'Resource not found', ),
-        (404, 'User not found', ),
-    )
+    @api_returns({
+        200: 'Operation successful',
+        403: 'User does not have permission',
+        404: 'Resource not found',
+        404: 'User not found',
+    })
     def add(request, *args, **kwargs):
         if not request.user.is_superuser:
             return JsonResponseForbidden()  # 403

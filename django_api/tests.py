@@ -117,10 +117,10 @@ class SimpleTest(TestCase):
         """
         Test that the @api_returns decorator (in debug mode)
         """
-        @api_returns([
-            (200, 'OK', ),
-            (403, 'Permission denied', ),
-        ])
+        @api_returns({
+            200: 'OK',
+            403: 'Permission denied',
+        })
         def simple_view(request):
             if 'ok' in request.GET:
                 return JsonResponse()
@@ -155,10 +155,10 @@ class SimpleTest(TestCase):
         original_log_level = logger.level
         logger.setLevel(1000)
 
-        @api_returns([
-            (200, 'OK', ),
-            (403, 'Permission denied', ),
-        ])
+        @api_returns({
+            200: 'OK',
+            403: 'Permission denied',
+        })
         def simple_view(request):
             if 'ok' in request.GET:
                 return JsonResponse()
@@ -182,10 +182,10 @@ class SimpleTest(TestCase):
                 'im_required': forms.IntegerField(),
                 'ok': forms.IntegerField(required=False),
             },
-            'returns': [
-                (200, 'OK', ),
-                (403, 'Permission denied', ),
-            ],
+            'returns': {
+                200: 'OK',
+                403: 'Permission denied',
+            },
         })
         def simple_view(request):
             if request.GET['ok']:
