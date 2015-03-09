@@ -1,12 +1,12 @@
 import datetime
 import decimal
+from json.encoder import JSONEncoder
 
 from django.db.models.query import QuerySet
 from django.http import HttpResponse
-from django.utils import simplejson
 
 
-class JsonEncoder(simplejson.JSONEncoder):
+class JsonEncoder(JSONEncoder):
     """
     JSON encoder that converts additional Python types to JSON.
     """

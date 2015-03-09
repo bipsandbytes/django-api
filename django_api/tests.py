@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
+import json
 import logging
-from django.utils import simplejson
 from django import forms
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -8,10 +7,10 @@ from django.test.utils import override_settings
 from django_api.decorators import api
 from django_api.decorators import api_accepts
 from django_api.decorators import api_returns
-from django_api.json import JsonResponse
-from django_api.json import JsonResponseForbidden
-from django_api.json import JsonResponseAccepted
-from django_api.json import JsonResponseWithStatus
+from django_api.json_helpers import JsonResponse
+from django_api.json_helpers import JsonResponseForbidden
+from django_api.json_helpers import JsonResponseAccepted
+from django_api.json_helpers import JsonResponseWithStatus
 from django.contrib.auth.models import User
 
 logger = logging.getLogger(__name__)
@@ -37,7 +36,7 @@ class SimpleTest(TestCase):
         request = rf.post('/post_success', data={'im_required': '10'})
         response = my_post_view(request)
         self.assertEquals(response.status_code, 200)
-        response_json = simplejson.loads(response.content)
+        response_json = json.loads(response.content)
         self.assertEquals(response_json['error_message'], 'post called')
 
         # Test that GETs are validated.
@@ -51,7 +50,7 @@ class SimpleTest(TestCase):
         request = rf.get('/get_success', data={'im_required': '10'})
         response = my_get_view(request)
         self.assertEquals(response.status_code, 200)
-        response_json = simplejson.loads(response.content)
+        response_json = json.loads(response.content)
         self.assertEquals(response_json['error_message'], 'get called')
 
         # Test that POSTs are validated.
@@ -109,7 +108,7 @@ class SimpleTest(TestCase):
         request = rf.post('/post_failure', data={'hello': 'world'})
         response = my_failed_post_view(request)
         self.assertEquals(response.status_code, 200)
-        response_json = simplejson.loads(response.content)
+        response_json = json.loads(response.content)
         self.assertEquals(response_json['error_message'], 'still called on failure')
         logger.setLevel(original_log_level)
 

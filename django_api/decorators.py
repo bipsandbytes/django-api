@@ -1,12 +1,12 @@
+import json
 import logging
 from functools import wraps
 from django import forms
 from django.conf import settings
 from django.db import models
-from django.utils import simplejson
-from django_api.json import JsonResponse
-from django_api.json import JsonResponseBadRequest
-from django_api.json import JsonResponseNotFound
+from django_api.json_helpers import JsonResponse
+from django_api.json_helpers import JsonResponseBadRequest
+from django_api.json_helpers import JsonResponseNotFound
 
 
 logger = logging.getLogger(__name__)
@@ -233,7 +233,7 @@ def validate_json_request(required_fields):
         @wraps(func)
         def wrapped_func(request, *args, **kwargs):
             try:
-                request_dict = simplejson.loads(request.raw_post_data)
+                request_dict = json.loads(request.raw_post_data)
             except ValueError as e:
                 return JsonResponseBadRequest('invalid POST JSON: %s' % e)
 
