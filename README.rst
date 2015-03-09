@@ -5,6 +5,33 @@ Django API
 Django API is a way to cleanly specify and validate your Django_ APIs in a single block of code.
 It provides a method to keep your API documentation and implementation consistent.
 
+::
+
+    from django import forms
+    from django_api.decorators import api
+    from django_api.json_helpers import JsonResponse
+    from django_api.json_helpers import JsonResponseForbidden
+
+
+    @api({
+        'accepts': {
+            'x': forms.IntegerField(min_value=0),
+            'y': forms.IntegerField(max_value=10),
+        },
+        'returns': {
+            200: 'Addition successful',
+            403: 'User does not have permission',
+        }
+    })
+    def add(request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return JsonResponseForbidden("You need to be a superuser")
+
+        return JsonResponse({
+            'sum': request.GET['x'] + request.GET['y']
+        })
+
+
 .. _Django: https://www.djangoproject.com/
 
 ------------
@@ -97,29 +124,6 @@ If the response does not conform to the specification, the query will fail to va
         404: 'User not found',
     }
 
-Putting it all together, we have
-
-::
-
-    from django_api.decorators import api
-    @api({
-        'accepts': {
-            'x': forms.IntegerField(min_value=0),
-            'y': forms.IntegerField(max_value=10, required=False),
-        },
-        'returns': {
-            200: 'Addition successful',
-            403: 'User does not have permission',
-            404: 'Resource not found',
-            404: 'User not found',
-        }
-    })
-    def add(request, *args, **kwargs):
-        if not request.GET['x'] == 10:
-            return JsonResponseForbidden()  # 403
-
-        return HttpResponse()  # 200
-
 
 Validation
 ----------
@@ -158,20 +162,34 @@ API accepts, or the return values of the API.
 
 Example::
 
+
+    from django import forms
     from django_api.decorators import api_accepts
+    from django_api.json_helpers import JsonResponse
+    from django_api.json_helpers import JsonResponseForbidden
+
+
     @api_accepts({
         'x': forms.IntegerField(min_value=0),
         'y': forms.IntegerField(min_value=0),
     })
     def add(request, *args, **kwargs):
-        x = request.POST['x']
-        y = request.POST['y']
+        if not request.user.is_superuser:
+            return JsonResponseForbidden("You need to be a superuser")
 
-        # x and y are integers already.
-        return HttpResponse('%d' % (x + y))
+        return JsonResponse({
+            'sum': request.GET['x'] + request.GET['y']
+        })
 
 
+
+
+    from django import forms
     from django_api.decorators import api_returns
+    from django_api.json_helpers import JsonResponse
+    from django_api.json_helpers import JsonResponseForbidden
+
+
     @api_returns({
         200: 'Operation successful',
         403: 'User does not have permission',
@@ -180,6 +198,8 @@ Example::
     })
     def add(request, *args, **kwargs):
         if not request.user.is_superuser:
-            return JsonResponseForbidden()  # 403
+            return JsonResponseForbidden("You need to be a superuser")
 
-        return HttpResponse()  # 200
+        return JsonResponse({
+            'sum': request.GET['x'] + request.GET['y']
+        })
