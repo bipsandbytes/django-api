@@ -27,6 +27,8 @@ It provides a method to keep your API documentation and implementation consisten
         if not request.user.is_superuser:
             return JsonResponseForbidden("You need to be a superuser")
 
+        # `x` and `y` have been validated, and are integers
+        # so we can safely perform arithmetic operations on them
         return JsonResponse({
             'sum': request.GET['x'] + request.GET['y']
         })
