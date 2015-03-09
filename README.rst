@@ -127,6 +127,15 @@ If validation fails, a ``HTTP 400 - Bad request`` is returned to the client. For
 This ensures that production code always remains unaffected. 
 
 
+Testing
+----------
+Run the tests with the folllowing command
+
+::
+
+    python manage.py test django_api
+
+
 --------------
 Advanced usage
 --------------
