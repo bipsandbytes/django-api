@@ -93,10 +93,12 @@ accepts
 -------
 
 Describe the query parameters your API accepts by listing them out in the ``accepts`` dictionary. Each entry in the ``accepts`` section
-maps a name to a Django_ form type.
+maps a name to a `Django form field
+<https://docs.djangoproject.com/en/1.7/ref/forms/fields/>`_ type.
 Received query parameters are automatically converted to the specified type. If the parameter does not conform to the specification
 the query fails to validate (see below).
 Once validated, the variables will be placed in the ``request`` dictionary for use within the view.
+
 
 ::
 
@@ -106,6 +108,14 @@ Once validated, the variables will be placed in the ``request`` dictionary for u
         'u': User(),
     }
  
+Since each parameter is specified using a Django form field, any argument that its  class constructor takes can be used. Examples include 
+
+* ``required``
+* ``initial``
+* ``max_length`` for ``CharField``
+* ``min_value`` for ``IntegerField``
+
+For a full reference, please `see here <https://docs.djangoproject.com/en/1.7/ref/forms/fields/>`_.
 
 returns
 -------
