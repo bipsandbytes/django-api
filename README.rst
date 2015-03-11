@@ -20,13 +20,9 @@ It provides a method to keep your API documentation and implementation consisten
         },
         'returns': {
             200: 'Addition successful',
-            403: 'User does not have permission',
         }
     })
     def add(request, *args, **kwargs):
-        if not request.user.is_superuser:
-            return JsonResponseForbidden("You need to be a superuser")
-
         # `x` and `y` have been validated, and are integers
         # so we can safely perform arithmetic operations on them
         return JsonResponse({
@@ -186,9 +182,6 @@ Example::
         'y': forms.IntegerField(min_value=0),
     })
     def add(request, *args, **kwargs):
-        if not request.user.is_superuser:
-            return JsonResponseForbidden("You need to be a superuser")
-
         return JsonResponse({
             'sum': request.GET['x'] + request.GET['y']
         })
@@ -209,9 +202,6 @@ Example::
         404: 'User not found',
     })
     def add(request, *args, **kwargs):
-        if not request.user.is_superuser:
-            return JsonResponseForbidden("You need to be a superuser")
-
         return JsonResponse({
             'sum': request.GET['x'] + request.GET['y']
         })
