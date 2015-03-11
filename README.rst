@@ -2,8 +2,9 @@
 Django API
 =================
 
-Django API is a way to cleanly specify and validate your Django_ APIs in a single block of code.
-It provides a method to keep your API documentation and implementation consistent.
+``django_api`` lets you specify and validate your Django_ APIs in a single block of code.
+
+It does this with an ``@api`` decorator that wraps Django views. This keeps the API documentation consistent, localized and declarative.
 
 ::
 
