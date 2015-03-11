@@ -32,7 +32,7 @@ It provides a method to keep your API documentation and implementation consisten
 
 .. _Django: https://www.djangoproject.com/
 
-Based on the above example, the following API responses are automatically available:
+Based on the above example, the following API responses are automatically available (assuming you wire up the ``/add`` route to the view above:
 
 ::
 
