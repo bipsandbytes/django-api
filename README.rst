@@ -159,7 +159,7 @@ Advanced usage
 Django Models
 --------------
 
-`@accepts` can be used to also accept your Django models through the object's `id`. For a Model `Model`, Django expects the query parameter to be name `model-id`.
+``@accepts`` can be used to also accept your Django models through the object's ``id``. For a Model ``Model``, Django expects the query parameter to be name ``model-id``.
 
 ::
 
