@@ -32,6 +32,30 @@ It provides a method to keep your API documentation and implementation consisten
 
 .. _Django: https://www.djangoproject.com/
 
+Based on the above example, the following API responses are automatically available:
+
+::
+
+    GET /add
+
+    "failed to validate: {'y': [u'This field is required.'], 'x': [u'This field is required.']}"
+
+
+    GET /add?x=10
+
+    "failed to validate: {'y': [u'This field is required.']}"
+
+
+    GET /add?x=10&y=100
+
+    "failed to validate: {'y': [u'Ensure this value is less than or equal to 10.']}"
+
+
+    GET /add?x=10&y=10
+
+    {sum: 20}
+
+
 ------------
 Dependencies
 ------------
