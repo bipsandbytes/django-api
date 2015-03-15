@@ -1,6 +1,7 @@
 import os
 from setuptools import setup
 
+
 with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
     README = readme.read()
 
@@ -9,11 +10,11 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='django-api',
-    version='0.1.1',
+    version='0.1.2',
     packages=['django_api'],
     include_package_data=True,
     license='BSD License',
-    description='Cleanly specify and validate your Django APIs',
+    description='Specify and validate your Django APIs',
     long_description=README,
     author='Bipin Suresh',
     author_email='bipins@alumni.stanford.edu',
