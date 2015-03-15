@@ -12,6 +12,7 @@ setup(
     name='django-api',
     version='0.1.2',
     packages=['django_api'],
+    url='https://github.com/bipsandbytes/django-api',
     include_package_data=True,
     license='BSD License',
     description='Specify and validate your Django APIs',
