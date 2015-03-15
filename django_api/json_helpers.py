@@ -1,30 +1,23 @@
-import datetime
-import decimal
-from json.encoder import JSONEncoder
-
-from django.db.models.query import QuerySet
+from django.core import serializers
+from django.db import models
+from django.forms.models import model_to_dict
 from django.http import HttpResponse
 
 
-class JsonEncoder(JSONEncoder):
+class JsonResponseEncoder(serializers.json.DjangoJSONEncoder):
     """
-    JSON encoder that converts additional Python types to JSON.
+    JSON encoder that converts Django types to JSON.
     """
     def default(self, obj):
         """
-        Converts datetime objects to ISO-compatible strings.
-        Converts Decimal objects to floats during json serialization.
+        Convert QuerySet objects to their list counter-parts
         """
-        if isinstance(obj, datetime.datetime) or isinstance(obj, datetime.date):
-            return obj.isoformat()
-        if isinstance(obj, datetime.datetime):
-            return obj.isoformat()
-        elif isinstance(obj, decimal.Decimal):
-            return float(obj)
-        elif isinstance(obj, QuerySet):
-            return list(obj)
+        if isinstance(obj, models.Model):
+            return self.encode(model_to_dict(obj))
+        elif isinstance(obj, models.query.QuerySet):
+            return serializers.serialize('json', obj)
         else:
-            return None
+            return super(JsonResponseEncoder, self).default(obj)
 
 
 class JsonResponse(HttpResponse):
@@ -33,7 +26,7 @@ class JsonResponse(HttpResponse):
         self.set_content(data)
 
     def set_content(self, data):
-        json_encoder = JsonEncoder(separators=(',', ':'))
+        json_encoder = JsonResponseEncoder(separators=(',', ':'))
         content = json_encoder.encode(data)
         self.content = content
 

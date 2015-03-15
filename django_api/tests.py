@@ -1,3 +1,4 @@
+import datetime
 import json
 import logging
 from django import forms
@@ -84,6 +85,24 @@ class SimpleTest(TestCase):
         response = model_view(request)
         self.assertEquals(response.status_code, 200)
 
+        # Test that datetime are handled by @api_accepts
+        @api_accepts({
+            'date_param': forms.DateField(),
+            'datetime_param': forms.DateTimeField(input_formats=['%Y-%m-%dT%H:%M:%S']),
+            'time_param': forms.TimeField(),
+        })
+        def datetime_view(request, *args, **kwargs):
+            self.assertTrue(request.GET['date_param'], datetime.date(2010, 2, 17))
+            self.assertTrue(request.GET['datetime_param'], datetime.datetime(2006, 11, 21, 16, 30))
+            self.assertTrue(request.GET['time_param'], datetime.time(16, 30))
+            return JsonResponse()
+        request = rf.get('/datetime_success', data={
+            'date_param': '2010-02-17',
+            'datetime_param': '2006-11-21T16:30:00',
+            'time_param': '16:30:00',
+        })
+        response = datetime_view(request)
+        self.assertEquals(response.status_code, 200)
 
     @override_settings(DEBUG=False)
     def test_api_accepts_decorator(self):
@@ -141,6 +160,25 @@ class SimpleTest(TestCase):
         request = rf.get('/simple_view', data={'bad': '1'})
         response = simple_view(request)
         self.assertEquals(response.status_code, 400)
+
+        @api_returns({
+            200: 'OK',
+        })
+        def datetime_view(request):
+            # send complex objects
+            user = User.objects.create()
+            users = User.objects.all()
+            return JsonResponse({
+                'date': datetime.date(2010, 2, 17),
+                'datetime': datetime.datetime(2006, 11, 21, 16, 30),
+                'time': datetime.time(16, 30),
+                'user': user,
+                'users': users,
+            })
+
+        request = rf.get('/datetime_view')
+        response = datetime_view(request)
+        self.assertEquals(response.status_code, 200)
 
     @override_settings(DEBUG=False)
     def test_api_returns_decorator(self):
